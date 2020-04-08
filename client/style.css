@@ -1,0 +1,12 @@
+#console{
+    background-color: black;
+    border-radius: 5px;
+    padding: 10px;
+    height: 500px;
+    overflow-x: auto;
+}
+
+#console-header{
+    font-weight: 500;
+    color: rgb(200, 200, 200);
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Minecraft Server Monitor</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="console.js" defer></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.3.0/milligram.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1> Minecraft Server Panel</h1>
+    <div id="app">
+        <div id="console">
+            <div class="logMessage" v-for="log in logs">
+                <span id="console-header"> console></span> {{ log }}
+            </div>
+        </div>
+        <input type="text" v-model="currentCommand" v-on:keyup="submitCommandOnEnter">
+        <button v-on:click="submitCommand">submit command</button>
+    </div>
+</body>
+
+</html>
