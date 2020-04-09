@@ -10,3 +10,35 @@
     font-weight: 500;
     color: rgb(200, 200, 200);
 }
+
+#serverControl button{
+    display: inline
+}
+
+#editor { 
+   display: inline-block;
+   width: 80%;
+   height: 100%;
+}
+
+#fileManager{
+    background: #9b4dca;
+    padding: 15px;
+    border-radius: 5px;
+    height: 600px;
+}
+
+#files{
+    display: inline-block;
+    width: 20%;
+    height: 100%;
+    border-right: 5px solid black;
+}
+
+.file:nth-child(odd) { 
+    background: #eee; 
+}
+
+.file:nth-child(even){
+    background: #aaa;
+}

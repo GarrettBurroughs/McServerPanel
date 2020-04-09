@@ -2,7 +2,7 @@ let socket = io();
 
 
 let app = new Vue({
-    el: "#app",
+    el: "#consolePage",
     data: {
         logs: [],
         currentCommand: "",
@@ -24,6 +24,12 @@ let app = new Vue({
         submitCommand: function () {
             this.socket.emit('command', this.currentCommand);
             this.currentCommand = "";
+        },
+        startServer: function () {
+            fetch(window.location.href + 'start', { method: 'POST' }).then(response => { console.log(response) });
+        },
+        stopServer: function () {
+            fetch(window.location.href + 'stop', { method: 'POST' }).then(response => { console.log(response) });
         }
     }
 })
