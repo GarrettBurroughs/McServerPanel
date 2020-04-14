@@ -33,11 +33,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/client/index.html'));
 })
 
-app.get('/console', (req, res) => { 
+app.get('/console', (req, res) => {
     res.sendFile(path.join(__dirname + "/client/console.html"));
 })
 
-app.get('/instances', (req, res) => { 
+app.get('/instances', (req, res) => {
     res.send(getInstances())
 })
 
@@ -53,7 +53,7 @@ app.post('/start', (req, res) => {
 
 app.post('/stop', (req, res) => {
     try {
-        io.emit('stdOut', { content : 'stopping server'} )
+        io.emit('stdOut', { content: 'stopping server' })
         script.kill();
         script = null;
         res.status(200);
@@ -62,7 +62,7 @@ app.post('/stop', (req, res) => {
     }
 });
 
-app.get('/getFile/:file', (req, res) => { 
+app.get('/getFile/:file', (req, res) => {
     res.sendFile(path.join(__dirname, `minecraft/${currentInstance}/${req.params.file}`));
 })
 
@@ -85,11 +85,6 @@ io.on('connection', function (socket) {
         }
     });
 });
-
-
-
-
-
 
 http.listen(port, () => {
     console.log(`Listening on port ${port}`);
