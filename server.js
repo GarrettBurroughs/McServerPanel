@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path')
 const app = express();
+const cors = require('cors');
 
 const http = require('http').createServer(app)
 const socketIO = require('socket.io');
@@ -23,7 +24,9 @@ const processStdOut = (data) => {
     stdout.push(data);
 }
 
-app.use(express.static('client'));
+app.use(cors({
+    origin: "http://localhost:8080"
+}))
 
 app.get('/stdout', (req, res) => {
     res.send(stdout);
@@ -33,17 +36,23 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/client/index.html'));
 })
 
-app.get('/console', (req, res) => { 
+app.get('/console', (req, res) => {
     res.sendFile(path.join(__dirname + "/client/console.html"));
 })
 
-app.get('/instances', (req, res) => { 
+app.get('/instances', (req, res) => {
     res.send(getInstances())
 })
 
 app.post('/start', (req, res) => {
+    console.log('attempting to start server');
     try {
-        script = spawn(`./ServerStart.sh`, [currentInstance]);
+        if (process.platform === "linux" || process.platform === "darwin") {
+            script = spawn(`./scripts/ServerStart.sh`, [currentInstance]);
+        }
+        if (process.platform === "win32") {
+            script = spawn(`.\\scripts\\ServerStart.bat`, [currentInstance]);
+        }
         script.stdout.on('data', processStdOut);
         res.status(200)
     } catch{
@@ -53,7 +62,7 @@ app.post('/start', (req, res) => {
 
 app.post('/stop', (req, res) => {
     try {
-        io.emit('stdOut', { content : 'stopping server'} )
+        io.emit('stdOut', { content: 'stopping server' })
         script.kill();
         script = null;
         res.status(200);
@@ -62,7 +71,7 @@ app.post('/stop', (req, res) => {
     }
 });
 
-app.get('/getFile/:file', (req, res) => { 
+app.get('/getFile/:file', (req, res) => {
     res.sendFile(path.join(__dirname, `minecraft/${currentInstance}/${req.params.file}`));
 })
 
@@ -85,11 +94,6 @@ io.on('connection', function (socket) {
         }
     });
 });
-
-
-
-
-
 
 http.listen(port, () => {
     console.log(`Listening on port ${port}`);
