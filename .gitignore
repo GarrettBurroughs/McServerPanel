@@ -1,3 +1,19 @@
 node_modules
 .DS_Store
 minecraft
+.vscode
+
+# Vue CLI files
+
+app/.DS_Store
+app/node_modules
+app/dist
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+app/npm-debug.log*
+app/yarn-debug.log*
+app/yarn-error.log*
