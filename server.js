@@ -2,10 +2,11 @@ const express = require('express');
 const path = require('path')
 const app = express();
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const http = require('http').createServer(app)
 const socketIO = require('socket.io');
-const { spawn } = require('child_process');
+const { spawn, exec } = require('child_process');
 const fs = require('fs');
 
 let script;
@@ -28,12 +29,15 @@ app.use(cors({
     origin: "http://localhost:8080"
 }))
 
+app.use(bodyParser.json());
+app.use(express.static('app/dist'));
+
 app.get('/stdout', (req, res) => {
     res.send(stdout);
 })
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/client/index.html'));
+    res.sendFile(path.join(__dirname, '/app//dist/index.html'));
 })
 
 app.get('/console', (req, res) => {
@@ -44,7 +48,13 @@ app.get('/instances', (req, res) => {
     res.send(getInstances())
 })
 
+app.get('/currentInstance', (req, res) => {
+    res.send({ currentInstance: currentInstance })
+})
+
 app.post('/start', (req, res) => {
+    io.emit('message', { content: "attempting to start server" });
+
     console.log('attempting to start server');
     try {
         if (process.platform === "linux" || process.platform === "darwin") {
@@ -62,13 +72,22 @@ app.post('/start', (req, res) => {
 
 app.post('/stop', (req, res) => {
     try {
-        io.emit('stdOut', { content: 'stopping server' })
-        script.kill();
+        io.emit('message', { content: 'stopping server' })
+        if (process.platform === 'win32') {
+            exec('taskkill /pid ' + script.pid + ' /T /F')
+        } else {
+            script.kill();
+        }
         script = null;
         res.status(200);
     } catch{
         res.status(500);
     }
+});
+
+app.post('/select', (req, res) => {
+    currentInstance = req.body.server;
+    io.emit("message", { content: `switched to ${currentInstance}` })
 });
 
 app.get('/getFile/:file', (req, res) => {
@@ -90,7 +109,7 @@ io.on('connection', function (socket) {
         if (script) {
             script.stdin.write(command + "\n");
         } else {
-            io.emit('stdOut', { content: "Server Not Running" });
+            io.emit('message', { content: "Server Not Running" });
         }
     });
 });

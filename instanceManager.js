@@ -4,7 +4,6 @@ const fetch = require('node-fetch');
 
 function getInstances() {
     const mcPath = path.join(__dirname, 'minecraft');
-    console.log(mcPath);
     if (fs.existsSync(mcPath)) {
         return fs.readdirSync(path.join(__dirname, 'minecraft'));
     } else {
