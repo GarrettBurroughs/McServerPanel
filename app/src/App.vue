@@ -2,6 +2,7 @@
   <div id="consolePage">
     <h1>Minecraft Server Panel</h1>
     <InstanceControl v-on:newServer="createServer" />
+    <ServerCreator v-show="shouldCreateServer" />
     <ServerControl />
     <Console />
   </div>
@@ -11,6 +12,7 @@
 import Console from "./components/Console";
 import ServerControl from "./components/ServerControl";
 import InstanceControl from "./components/InstanceControl";
+import ServerCreator from "./components/ServerCreator";
 
 export default {
   name: "App",
@@ -18,6 +20,7 @@ export default {
     Console,
     ServerControl,
     InstanceControl,
+    ServerCreator,
   },
   data() {
     return {
