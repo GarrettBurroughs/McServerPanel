@@ -5,8 +5,12 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "deploy:build": "cd app && npm run build",
+    "deploy:start": "node server.js",
+    "deploy": "run-s deploy:*",
+    "dev:server": "nodemon server.js",
+    "dev:client": "cd app && npm run serve",
+    "dev": "run-p dev:*"
   },
   "author": "Garrett Burroughs",
   "license": "ISC",
@@ -16,6 +20,7 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "npm-run-all": "^4.1.5"
   }
 }

@@ -28,12 +28,14 @@ app.use(cors({
     origin: "http://localhost:8080"
 }))
 
+app.use(express.static('app/dist'));
+
 app.get('/stdout', (req, res) => {
     res.send(stdout);
 })
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/client/index.html'));
+    res.sendFile(path.join(__dirname, '/app/dist/index.html'));
 })
 
 app.get('/console', (req, res) => {
