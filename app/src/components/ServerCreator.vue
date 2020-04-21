@@ -148,4 +148,8 @@ h3 {
   margin-left: 20px;
   font-size: 24px;
 }
+
+#url input {
+  width: 400px;
+}
 </style>
