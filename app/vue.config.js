@@ -1,7 +1,9 @@
-const configureAPI = require('./src/server/configure')
-
 module.exports = {
-    devServer: {
-        before: configureAPI
+    pages: {
+        index: {
+            entry: "src/main.js",
+            filename: "index.html",
+            title: "MC Server Panel"
+        }
     }
 }
