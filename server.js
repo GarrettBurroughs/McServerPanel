@@ -13,7 +13,7 @@ let script;
 const port = 3000;
 const io = socketIO(http);
 
-const { getInstances } = require('./instanceManager');
+const { getInstances, getAllVerions } = require('./instanceManager');
 
 const stdout = [];
 let currentInstance = 'server1';
@@ -30,7 +30,9 @@ app.use(cors({
 }))
 
 app.use(express.static('app/dist'));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 
 app.get('/stdout', (req, res) => {
     res.send(stdout);
@@ -50,6 +52,14 @@ app.get('/instances', (req, res) => {
 
 app.get('/currentInstance', (req, res) => {
     res.send({ currentInstance: currentInstance })
+})
+
+app.get('/getVersions', async (req, res) => {
+    res.send(await getAllVerions(
+        req.query.snapshot.toLowerCase() === "true",
+        req.query.alpha.toLowerCase() === "true",
+        req.query.beta.toLowerCase() === "true"
+    ));
 })
 
 app.post('/start', (req, res) => {
