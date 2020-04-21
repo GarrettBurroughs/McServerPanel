@@ -13,7 +13,7 @@ let script;
 const port = 3000;
 const io = socketIO(http);
 
-const { getInstances, getAllVerions } = require('./instanceManager');
+const { getInstances, getAllVerions, createNewInstance } = require('./instanceManager');
 
 const stdout = [];
 let currentInstance = 'server1';
@@ -110,6 +110,25 @@ app.get('/getFiles/:dir', (req, res) => {
 
 app.get('/getFiles', (req, res) => {
     res.send(fs.readdirSync(`./minecraft/${currentInstance}`));
+})
+
+app.post('/createServer', (req, res) => {
+    try {
+        createNewInstance(req.body.name, req.body.url);
+        if (!req.body.name) throw { message: "Server needs a name" };
+
+        io.emit("message", { content: `Creating server ${req.body.name}` });
+        if (req.body.url) {
+            io.emit("message", { content: `downloading server jar from ${req.body.url}` });
+        } else {
+            io.emit("message", { content: "folder created, please finish the rest of the manual setup before resuming" })
+        }
+        res.status(200)
+    } catch (err) {
+        io.emit("error", { content: "error creating severver" })
+        io.emit("error", { content: `Error: ${err.message}` })
+        res.status(500);
+    }
 })
 
 io.on('connection', function (socket) {

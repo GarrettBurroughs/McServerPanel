@@ -31,7 +31,9 @@
         />
         Beta Versions
       </div>
+      Version:
       <select v-model="version">
+        <option disabled value="">Please select one</option>
         <option v-for="version in versions" v-bind:key="version.id">
           {{ version.id }}
         </option>
@@ -79,7 +81,7 @@ export default {
       alpha: false,
       beta: false,
       snapshot: false,
-      version: 0,
+      version: "0",
       url: "",
       serverName: "",
     };
@@ -89,20 +91,10 @@ export default {
       .then((res) => res.json())
       .then((data) => {
         this.versions = data;
-        console.log(data);
       });
   },
   methods: {
     getVersions() {
-      console.log("getting versions!", {
-        snapshot: this.snapshot,
-        alpha: this.alpha,
-        beta: this.beta,
-      });
-      console.log(
-        this.serverUrl +
-          `getVersions?snapshot=${this.snapshot}&beta=${this.beta}&alpha=${this.alpha}`
-      );
       fetch(
         this.serverUrl +
           `getVersions?snapshot=${this.snapshot}&beta=${this.beta}&alpha=${this.alpha}`
@@ -113,11 +105,58 @@ export default {
           this.versions = data;
         });
     },
-    createManual() {},
-    createFromVersion() {},
-    createFromUrl() {},
+    createManual() {
+      fetch(this.serverUrl + "createServer", {
+        method: "POST",
+        body: JSON.stringify({
+          name: this.serverName,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
+    async createFromVersion() {
+      let idx = findVersion(this.versions, this.version);
+      console.log(this.version);
+      console.log(idx);
+      console.log(this.versions[idx]);
+      let downloadURL = await fetch(this.versions[idx].url)
+        .then((res) => res.json())
+        .then((data) => data.downloads.server.url);
+      fetch(this.serverUrl + "createServer", {
+        method: "POST",
+        body: JSON.stringify({
+          name: this.serverName,
+          url: downloadURL,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
+    createFromUrl() {
+      fetch(this.serverUrl + "createServer", {
+        method: "POST",
+        body: JSON.stringify({
+          name: this.serverName,
+          url: this.url,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    },
   },
 };
+
+function findVersion(arr, version) {
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].id === version) {
+      return i;
+    }
+  }
+}
 </script>
 
 <style>

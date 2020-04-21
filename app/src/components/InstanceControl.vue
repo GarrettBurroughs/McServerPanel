@@ -3,6 +3,7 @@
     Current Server Instance:
     <div id="server-select" v-if="instances.length !== 0">
       <select name="dropdown" id="dropdown" v-model="currentServer">
+        <option disabled value="">Please select one</option>
         <option v-for="instance in instances" v-bind:key="instance">
           {{ instance }}
         </option>
@@ -42,13 +43,11 @@ export default {
     fetch(this.serverUrl + "instances")
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         this.instances = data;
       });
     fetch(this.serverUrl + "currentInstance")
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         this.currentServer = data.currentInstance;
       });
   },
@@ -69,7 +68,6 @@ export default {
       fetch(this.serverUrl + "currentInstance")
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           this.currentServer = data.currentInstance;
         });
     },

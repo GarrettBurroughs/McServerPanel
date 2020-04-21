@@ -3,8 +3,8 @@
     <div id="terminal">
       <div
         class="logMessage"
-        v-for="log in logs"
-        v-bind:key="log.message"
+        v-for="(log, index) in logs"
+        v-bind:key="index"
         v-bind:class="log.type"
       >
         <span id="console-header"> console></span>
@@ -42,11 +42,9 @@ export default {
         json.forEach((element) => {
           this.logs.push({ type: "log", message: element });
         });
-        console.log(this.logs);
       });
 
     this.socket.on("stdOut", (e) => {
-      console.log(e);
       this.logs.push({
         type: "log",
         message: e.content,
@@ -63,6 +61,13 @@ export default {
         message: e.content,
       });
     });
+
+    this.socket.on("error", (e) => {
+      this.logs.push({
+        type: "error",
+        message: e.content,
+      });
+    });
   },
   updated() {
     let elem = this.$el.querySelector("#terminal");
@@ -71,7 +76,6 @@ export default {
   methods: {
     submitCommandOnEnter: function(e) {
       if (e.keyCode === 13) {
-        console.log(this.currentCommand);
         this.submitCommand();
       }
     },
@@ -100,5 +104,10 @@ export default {
 .message {
   font-weight: 600;
   color: rgb(198, 207, 43);
+}
+
+.error {
+  font-weight: 600;
+  color: rgb(255, 50, 50);
 }
 </style>

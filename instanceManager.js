@@ -12,8 +12,8 @@ function getInstances() {
 
 }
 
-function createNewInstance(downloadUrl) {
-
+function createNewInstance(name, downloadUrl) {
+    console.log(`Downloading ${downloadUrl}`)
 }
 
 async function getAllVerions(snapshots, alpha, beta) {
