@@ -1,4 +1,5 @@
 const fs = require('fs');
+const https = require('https');
 const path = require('path');
 const fetch = require('node-fetch');
 
@@ -12,8 +13,28 @@ function getInstances() {
 
 }
 
-function createNewInstance(name, downloadUrl) {
+function createNewInstance(name, downloadUrl, cb) {
     console.log(`Downloading ${downloadUrl}`)
+
+    fs.mkdirSync(`./minecraft/${name}`);
+    const serverJAR = fs.createWriteStream(`./minecraft/${name}/server.jar`);
+    https.get(downloadUrl,  (response) => {
+        response.pipe(serverJAR);
+        serverJAR.on('finish', () => {
+            console.log('finished downloading!')
+            serverJAR.close();
+            cb({
+                type: "message",
+                message: "Server Jar downloaded!"
+            });
+        });
+    }).on('error', (error) => {
+        fs.unlink(`./minecraft/${name}/server.jar`);
+        cb({
+            type: "error",
+            message: error.message
+        })
+    });
 }
 
 async function getAllVerions(snapshots, alpha, beta) {

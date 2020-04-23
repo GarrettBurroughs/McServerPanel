@@ -2,7 +2,7 @@
   <div id="consolePage">
     <h1>Minecraft Server Panel</h1>
     <InstanceControl v-on:newServer="createServer" />
-    <ServerCreator v-show="shouldCreateServer" />
+    <ServerCreator v-show="shouldCreateServer" v-on:created="serverCreated" />
     <ServerControl />
     <Console />
   </div>
@@ -20,19 +20,22 @@ export default {
     Console,
     ServerControl,
     InstanceControl,
-    ServerCreator,
+    ServerCreator
   },
   data() {
     return {
       shouldCreateServer: false,
-      running: false,
+      running: false
     };
   },
   methods: {
     createServer() {
       this.shouldCreateServer = true;
     },
-  },
+    serverCreated() {
+      this.shouldCreateServer = false;
+    }
+  }
 };
 </script>
 

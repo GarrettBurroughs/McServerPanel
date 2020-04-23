@@ -114,15 +114,22 @@ app.get('/getFiles', (req, res) => {
 
 app.post('/createServer', (req, res) => {
     try {
-        createNewInstance(req.body.name, req.body.url);
         if (!req.body.name) throw { message: "Server needs a name" };
 
         io.emit("message", { content: `Creating server ${req.body.name}` });
         if (req.body.url) {
             io.emit("message", { content: `downloading server jar from ${req.body.url}` });
+            // Create Server
+            createNewInstance(req.body.name, req.body.url, (result) => {
+                // Report server status when completed
+                console.log(result)
+                io.emit(result.type, { content: result.message });
+            });
         } else {
+            fs.mkdirSync(`minecraft/${req.body.name}`)
             io.emit("message", { content: "folder created, please finish the rest of the manual setup before resuming" })
         }
+
         res.status(200)
     } catch (err) {
         io.emit("error", { content: "error creating severver" })
