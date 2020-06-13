@@ -1,5 +1,8 @@
 <template>
   <div id="serverControl">
+    <h2>
+      Server Control
+    </h2>
     <button v-on:click="startServer">Start Server</button>
     <button v-on:click="stopServer">Stop Server</button>
   </div>

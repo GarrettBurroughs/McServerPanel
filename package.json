@@ -4,6 +4,7 @@
   "description": "A simple, lightweight and open source web console for monitoring and controlling minecraft servers",
   "main": "server.js",
   "scripts": {
+    "build": "cd app && npm run build && cd .. && node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy:build": "cd app && npm run build",
     "deploy:start": "node server.js",
@@ -15,8 +16,10 @@
   "author": "Garrett Burroughs",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "node-fetch": "^2.6.0",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {

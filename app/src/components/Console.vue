@@ -1,8 +1,14 @@
 <template>
   <div id="console">
     <div id="terminal">
-      <div class="logMessage" v-for="log in logs" v-bind:key="log">
-        <span id="console-header"> console></span> {{ log }}
+      <div
+        class="logMessage"
+        v-for="(log, index) in logs"
+        v-bind:key="index"
+        v-bind:class="log.type"
+      >
+        <span id="console-header"> console></span>
+        {{ log.message }}
       </div>
     </div>
     <input
@@ -33,17 +39,34 @@ export default {
     fetch(this.serverUrl + "stdout")
       .then((data) => data.json())
       .then((json) => {
-        this.logs = json;
-        console.log(json);
+        json.forEach((element) => {
+          this.logs.push({ type: "log", message: element });
+        });
       });
 
     this.socket.on("stdOut", (e) => {
-      console.log(e);
-      this.logs.push(e.content);
+      this.logs.push({
+        type: "log",
+        message: e.content,
+      });
       let webConsole = document.getElementById("console");
       setTimeout(() => {
         webConsole.scrollTop = webConsole.scrollHeight;
       }, 10);
+    });
+
+    this.socket.on("message", (e) => {
+      this.logs.push({
+        type: "message",
+        message: e.content,
+      });
+    });
+
+    this.socket.on("error", (e) => {
+      this.logs.push({
+        type: "error",
+        message: e.content,
+      });
     });
   },
   updated() {
@@ -53,7 +76,6 @@ export default {
   methods: {
     submitCommandOnEnter: function(e) {
       if (e.keyCode === 13) {
-        console.log(this.currentCommand);
         this.submitCommand();
       }
     },
@@ -77,5 +99,15 @@ export default {
 #console-header {
   font-weight: 500;
   color: rgb(200, 200, 200);
+}
+
+.message {
+  font-weight: 600;
+  color: rgb(198, 207, 43);
+}
+
+.error {
+  font-weight: 600;
+  color: rgb(255, 50, 50);
 }
 </style>
