@@ -18,7 +18,7 @@ function createNewInstance(name, downloadUrl, cb) {
 
     fs.mkdirSync(`./minecraft/${name}`);
     const serverJAR = fs.createWriteStream(`./minecraft/${name}/server.jar`);
-    https.get(downloadUrl,  (response) => {
+    https.get(downloadUrl, (response) => {
         response.pipe(serverJAR);
         serverJAR.on('finish', () => {
             console.log('finished downloading!')
@@ -35,6 +35,10 @@ function createNewInstance(name, downloadUrl, cb) {
             message: error.message
         })
     });
+    fs.copyFileSync('./scripts/linuxTemplate.sh', `./minecraft/${name}/ServerStart.sh`);
+    fs.copyFileSync('./scripts/winTemplate.bat', `./minecraft/${name}/ServerStart.bat`);
+    fs.copyFileSync('./scripts/eula.txt', `./minecraft/${name}/eula.txt`);
+
 }
 
 async function getAllVerions(snapshots, alpha, beta) {

@@ -20,12 +20,12 @@ export default {
     Console,
     ServerControl,
     InstanceControl,
-    ServerCreator
+    ServerCreator,
   },
   data() {
     return {
       shouldCreateServer: false,
-      running: false
+      running: false,
     };
   },
   methods: {
@@ -34,8 +34,8 @@ export default {
     },
     serverCreated() {
       this.shouldCreateServer = false;
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -30,25 +30,29 @@
           v-on:change="getVersions"
         />
         Beta Versions
-      </div>Version:
+      </div>
+      Version:
       <select v-model="version">
         <option disabled value>Please select one</option>
-        <option v-for="version in versions" v-bind:key="version.id">{{ version.id }}</option>
+        <option v-for="version in versions" v-bind:key="version.id">{{
+          version.id
+        }}</option>
       </select>
       <button v-on:click="createFromVersion">Create!</button>
     </div>
-or
+    or
     <div id="url">
       <h4>Create from download url</h4>
       <input type="text" id="download-url" v-model="url" />
       <button v-on:click="createFromUrl">Create!</button>
     </div>
-or
+    or
     <div id="manual">
       <h4>
         Create manually (for this you must manually place the server jar in the
         generated folder)
-      </h4>A folder will be generated under
+      </h4>
+      A folder will be generated under
       <code>minecraft/{server name}</code>
       <br />
       <button v-on:click="createManual">Create!</button>
@@ -70,13 +74,13 @@ export default {
       snapshot: false,
       version: "0",
       url: "",
-      serverName: ""
+      serverName: "",
     };
   },
   mounted() {
     fetch(this.serverUrl + `getVersions?snapshot=false&beta=false&alpha=false`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         this.versions = data;
       });
   },
@@ -86,8 +90,8 @@ export default {
         this.serverUrl +
           `getVersions?snapshot=${this.snapshot}&beta=${this.beta}&alpha=${this.alpha}`
       )
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           console.log(data);
           this.versions = data;
         });
@@ -96,11 +100,11 @@ export default {
       fetch(this.serverUrl + "createServer", {
         method: "POST",
         body: JSON.stringify({
-          name: this.serverName
+          name: this.serverName,
         }),
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
       this.$emit("created");
     },
@@ -110,17 +114,17 @@ export default {
       console.log(idx);
       console.log(this.versions[idx]);
       let downloadURL = await fetch(this.versions[idx].url)
-        .then(res => res.json())
-        .then(data => data.downloads.server.url);
+        .then((res) => res.json())
+        .then((data) => data.downloads.server.url);
       fetch(this.serverUrl + "createServer", {
         method: "POST",
         body: JSON.stringify({
           name: this.serverName,
-          url: downloadURL
+          url: downloadURL,
         }),
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
       this.$emit("created");
     },
@@ -129,15 +133,15 @@ export default {
         method: "POST",
         body: JSON.stringify({
           name: this.serverName,
-          url: this.url
+          url: this.url,
         }),
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       });
       this.$emit("created");
-    }
-  }
+    },
+  },
 };
 
 function findVersion(arr, version) {
