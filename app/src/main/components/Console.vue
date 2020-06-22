@@ -7,15 +7,11 @@
         v-bind:key="index"
         v-bind:class="log.type"
       >
-        <span id="console-header"> console></span>
+        <span id="console-header">console></span>
         {{ log.message }}
       </div>
     </div>
-    <input
-      type="text"
-      v-model="currentCommand"
-      v-on:keyup="submitCommandOnEnter"
-    />
+    <input type="text" v-model="currentCommand" v-on:keyup="submitCommandOnEnter" />
     <button v-on:click="submitCommand">submit command</button>
   </div>
 </template>
@@ -32,22 +28,22 @@ export default {
         process.env.NODE_ENV === "development"
           ? "http://localhost:3000/"
           : "http://localhost:3000/",
-      socket: io("http://localhost:3000/"),
+      socket: io("http://localhost:3000/")
     };
   },
   mounted() {
     fetch(this.serverUrl + "stdout")
-      .then((data) => data.json())
-      .then((json) => {
-        json.forEach((element) => {
+      .then(data => data.json())
+      .then(json => {
+        json.forEach(element => {
           this.logs.push({ type: "log", message: element });
         });
       });
 
-    this.socket.on("stdOut", (e) => {
+    this.socket.on("stdOut", e => {
       this.logs.push({
         type: "log",
-        message: e.content,
+        message: e.content
       });
       let webConsole = document.getElementById("console");
       setTimeout(() => {
@@ -55,17 +51,17 @@ export default {
       }, 10);
     });
 
-    this.socket.on("message", (e) => {
+    this.socket.on("message", e => {
       this.logs.push({
         type: "message",
-        message: e.content,
+        message: e.content
       });
     });
 
-    this.socket.on("error", (e) => {
+    this.socket.on("error", e => {
       this.logs.push({
         type: "error",
-        message: e.content,
+        message: e.content
       });
     });
   },
@@ -82,8 +78,8 @@ export default {
     submitCommand: function() {
       this.socket.emit("command", this.currentCommand);
       this.currentCommand = "";
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -3,26 +3,18 @@
     Current Server Instance:
     <div id="server-select" v-if="instances.length !== 0">
       <select name="dropdown" id="dropdown" v-model="currentServer">
-        <option disabled value="">Please select one</option>
-        <option v-for="instance in instances" v-bind:key="instance">
-          {{ instance }}
-        </option>
+        <option disabled value>Please select one</option>
+        <option v-for="instance in instances" v-bind:key="instance">{{ instance }}</option>
       </select>
       <div>
-        <button v-on:click="selectServer">
-          Select Server
-        </button>
+        <button v-on:click="selectServer">Select Server</button>
 
-        <button id="create-server-right" v-on:click="newServer">
-          Create New Server
-        </button>
+        <button id="create-server-right" v-on:click="newServer">Create New Server</button>
       </div>
     </div>
 
     <div v-else id="new-server">
-      <button id="create-server" v-on:click="newServer">
-        Create New Server
-      </button>
+      <button id="create-server" v-on:click="newServer">Create New Server</button>
     </div>
   </div>
 </template>
@@ -36,18 +28,18 @@ export default {
           ? "http://localhost:3000/"
           : "http://localhost:3000/",
       currentServer: "",
-      instances: [],
+      instances: []
     };
   },
   mounted() {
     fetch(this.serverUrl + "instances")
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         this.instances = data;
       });
     fetch(this.serverUrl + "currentInstance")
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         this.currentServer = data.currentInstance;
       });
   },
@@ -59,19 +51,19 @@ export default {
       await fetch(this.serverUrl + "select", {
         method: "POST",
         body: JSON.stringify({
-          server: this.currentServer,
+          server: this.currentServer
         }),
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       });
       fetch(this.serverUrl + "currentInstance")
-        .then((res) => res.json())
-        .then((data) => {
+        .then(res => res.json())
+        .then(data => {
           this.currentServer = data.currentInstance;
         });
-    },
-  },
+    }
+  }
 };
 </script>
 
