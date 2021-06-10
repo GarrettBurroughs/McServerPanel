@@ -36,14 +36,12 @@
         <option v-for="version in versions" v-bind:key="version.id">{{ version.id }}</option>
       </select>
       <button v-on:click="createFromVersion">Create!</button>
-    </div>
-or
+    </div>or
     <div id="url">
       <h4>Create from download url</h4>
       <input type="text" id="download-url" v-model="url" />
       <button v-on:click="createFromUrl">Create!</button>
-    </div>
-or
+    </div>or
     <div id="manual">
       <h4>
         Create manually (for this you must manually place the server jar in the

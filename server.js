@@ -9,6 +9,10 @@ const socketIO = require('socket.io');
 const { spawn, exec } = require('child_process');
 const fs = require('fs');
 
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const session = require('express-session');
+
 let script;
 const port = 3000;
 const io = socketIO(http);
@@ -25,6 +29,31 @@ const processStdOut = (data) => {
     stdout.push(data);
 }
 
+passport.use(new LocalStrategy((username, password, done) => {
+    console.log(username);
+    if (password === "password") {
+        console.log('logged in!')
+        return done(null, {username: username})
+    }
+    return done(null, false, {message: "incorrect password"});
+}));
+
+passport.serializeUser(function (user, done) {
+    done(null, user.username);
+});
+
+passport.deserializeUser(function (username, done) {
+    done(null, { username: username });
+});
+
+const authenticationMiddleware = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next()
+    }
+    res.redirect('/login');
+}
+
+
 app.use(cors({
     origin: "http://localhost:8080"
 }))
@@ -32,14 +61,37 @@ app.use(cors({
 app.use(express.static('app/dist'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(session({
+    secret: '12345',
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
+
+
+app.post('/login',
+    passport.authenticate('local', {
+        successRedirect: '/home',
+        failureRedirect: '/login'
+    })
+)
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, '/app/dist/login.html'));
+});
 
 app.get('/stdout', (req, res) => {
     res.send(stdout);
 })
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/app/dist/index.html'));
+    res.sendFile(path.join(__dirname, '/app/dist/main.html'));
+})
+
+app.get('/home', (req, res) => { 
+    console.log('logging in!');
+    res.redirect('/');
 })
 
 app.get('/console', (req, res) => {
